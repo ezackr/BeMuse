@@ -28,8 +28,8 @@ def get_parent_dir(path: str, level: int = 1):
     return path
 
 
-current_dir: str = os.getcwd()
-root_dir: str = get_parent_dir(current_dir, level=3)
+current_path: str = os.path.abspath(__file__)
+root_dir: str = get_parent_dir(current_path, level=4)
 dict_path: str = os.path.join(root_dir, "artifact", "midibert", "CP.pkl")
 midibert_artifact_path: str = os.path.join(root_dir, "artifact", "midibert", "melody_best.ckpt")
 
