@@ -13,8 +13,7 @@ hidden_dim: int = 768
 
 def get_parent_dir(path: str, level: int = 1):
     """
-    Returns the n-th parent directory of a path (where n is given by the
-    "level" parameter)
+    Returns the (level)-th parent directory of a given path
     :param path: the root path
     :param level: the number of parent directories above the root path
     :return: the (level)-th parent directory of the given path
