@@ -37,7 +37,7 @@ midibert_artifact_path: str = os.path.join(root_dir, "artifact", "midibert", "pr
 
 def load_midibert() -> nn.Module:
     """
-    Loads the best melody MidiBERT checkpoint from the artifact directory.
+    Loads the pre-trained MidiBERT checkpoint from the artifact directory.
     :return: the pre-trained melody MidiBERT encoder
     :raise ValueError: if the MidiBERT checkpoint does not exist in the
     artifact directory
