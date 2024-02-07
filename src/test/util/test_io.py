@@ -1,6 +1,6 @@
 import os
 
-from src.main.util.io import get_parent_dir
+from src.main.util.io import get_parent_dir, load_midibert
 
 current_path: str = os.path.abspath(__file__)
 
@@ -21,3 +21,8 @@ def test_get_parent_dir_negative():
         assert False
     except ValueError:
         pass
+
+
+def test_load_midibert():
+    model = load_midibert()
+    assert model.hidden_size == 768
