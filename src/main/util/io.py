@@ -36,9 +36,14 @@ midibert_artifact_path: str = os.path.join(root_dir, "artifact", "midibert", "me
 
 def load_midibert() -> nn.Module:
     """
-    Loads the best melody MidiBERT checkpoint from the artifacts directory.
+    Loads the best melody MidiBERT checkpoint from the artifact directory.
     :return: the pre-trained melody MidiBERT encoder
+    :raise ValueError: if the MidiBERT checkpoint does not exist in the
+    artifact directory
     """
+    # check if checkpoint exists
+    if not os.path.exists(midibert_artifact_path):
+        raise ValueError("Unable to find artifact file " + midibert_artifact_path)
     # initialize bert model
     configuration = BertConfig(
         max_position_embeddings=max_seq_len,
