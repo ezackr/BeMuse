@@ -64,5 +64,9 @@ class MidiBert(nn.Module):
 
     def get_rand_tok(self):
         c1, c2, c3, c4 = self.n_tokens[0], self.n_tokens[1], self.n_tokens[2], self.n_tokens[3]
-        return np.array(
-            [random.choice(range(c1)), random.choice(range(c2)), random.choice(range(c3)), random.choice(range(c4))])
+        return np.array([
+            random.choice(range(c1)),
+            random.choice(range(c2)),
+            random.choice(range(c3)),
+            random.choice(range(c4))
+        ])
