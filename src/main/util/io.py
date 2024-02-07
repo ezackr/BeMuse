@@ -32,7 +32,7 @@ def get_parent_dir(path: str, level: int = 1):
 current_path: str = os.path.abspath(__file__)
 root_dir: str = get_parent_dir(current_path, level=4)
 dict_path: str = os.path.join(root_dir, "artifact", "midibert", "CP.pkl")
-midibert_artifact_path: str = os.path.join(root_dir, "artifact", "midibert", "melody_best.ckpt")
+midibert_artifact_path: str = os.path.join(root_dir, "artifact", "midibert", "pretrain_model.ckpt")
 
 
 def load_midibert() -> nn.Module:
@@ -55,6 +55,7 @@ def load_midibert() -> nn.Module:
         e2w, w2e = pickle.load(f)
     model = MidiBert(bertConfig=configuration, e2w=e2w, w2e=w2e)
     # load artifact
-    checkpoint = torch.load(midibert_artifact_path, map_location="cpu")
-    model.load_state_dict(checkpoint["state_dict"])
+    state_dict = torch.load(midibert_artifact_path, map_location="cpu")["state_dict"]
+    del state_dict["bert.embeddings.position_ids"]
+    model.load_state_dict(state_dict=state_dict)
     return model
