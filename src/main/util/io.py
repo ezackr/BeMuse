@@ -18,6 +18,7 @@ def get_parent_dir(path: str, level: int = 1):
     :param path: the root path
     :param level: the number of parent directories above the root path
     :return: the (level)-th parent directory of the given path
+    :raise ValueError: if the given level is less than 0
     """
     if level == 0:
         return path
