@@ -17,7 +17,7 @@ def get_parent_dir(path: str, level: int = 1):
     "level" parameter)
     :param path: the root path
     :param level: the number of parent directories above the root path
-    :return:
+    :return: the (level)-th parent directory of the given path
     """
     if level == 0:
         return path
@@ -35,6 +35,10 @@ midibert_artifact_path: str = os.path.join(root_dir, "artifact", "midibert", "me
 
 
 def load_midibert() -> nn.Module:
+    """
+    Loads the best melody MidiBERT checkpoint from the artifacts directory.
+    :return: the pre-trained melody MidiBERT encoder
+    """
     # initialize bert model
     configuration = BertConfig(
         max_position_embeddings=max_seq_len,
