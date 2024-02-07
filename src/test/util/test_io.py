@@ -7,7 +7,6 @@ current_path: str = os.path.abspath(__file__)
 
 def test_get_parent_dir():
     parent_dir_name = get_parent_dir(current_path, 2)
-    print(parent_dir_name)
     assert parent_dir_name.endswith("test")
 
 
