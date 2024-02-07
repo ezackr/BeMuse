@@ -65,7 +65,7 @@ class MidiBert(nn.Module):
 
         # feed to bert
         y = self.bert(inputs_embeds=emb_linear, attention_mask=attn_mask, output_hidden_states=output_hidden_states)
-        # y = y.last_hidden_state         # (batch_size, seq_len, 768)
+        y = y.last_hidden_state         # (batch_size, seq_len, 768)
         return y
 
     def get_rand_tok(self):
