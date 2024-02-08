@@ -11,7 +11,7 @@ max_seq_len: int = 512
 hidden_dim: int = 768
 
 
-def get_parent_dir(path: str, level: int = 1):
+def get_parent_dir(path: str, level: int = 1) -> str:
     """
     Returns the (level)-th parent directory of a given path
     :param path: the root path
