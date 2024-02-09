@@ -9,4 +9,9 @@ Follow the instructions on the [MidiBERT](https://github.com/wazenmai/MIDI-BERT/
 
 ## Overview
 
-We provide a brief overview of the project setup and the steps used to analyze a MIDI input query.
+We provide a brief overview of the project setup and the steps used to analyze a MIDI input query. For clarity, a diagram of the model architecture is provided below:
+
+![BeMuse architecture diagram](./media/bemuse-architecture.png)
+
+
+
