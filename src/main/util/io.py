@@ -31,17 +31,19 @@ def get_parent_dir(path: str, level: int = 1) -> str:
 current_path: str = os.path.abspath(__file__)
 root_dir: str = get_parent_dir(current_path, level=4)
 dict_path: str = os.path.join(root_dir, "artifact", "midibert", "CP.pkl")
-midibert_artifact_path: str = os.path.join(root_dir, "artifact", "midibert", "pretrain_model.ckpt")
 
 
-def load_midibert() -> nn.Module:
+def load_midibert(artifact_name: str = "pretrain_model.ckpt") -> nn.Module:
     """
     Loads the pre-trained MidiBERT checkpoint from the artifact directory.
+    :param artifact_name: the name of the MidiBERT artifact file in the
+    "BeMuse/artifact/midibert/" directory
     :return: the pre-trained melody MidiBERT encoder
     :raise ValueError: if the MidiBERT checkpoint does not exist in the
     artifact directory
     """
     # check if checkpoint exists
+    midibert_artifact_path = os.path.join(root_dir, "artifact", "midibert", artifact_name)
     if not os.path.exists(midibert_artifact_path):
         raise ValueError("Unable to find artifact file " + midibert_artifact_path)
     # initialize bert model
