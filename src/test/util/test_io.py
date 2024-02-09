@@ -25,3 +25,10 @@ def test_get_parent_dir_negative():
 def test_load_midibert():
     model = load_midibert()
     assert model.hidden_size == 768
+
+
+def test_load_midibert_nonexistent():
+    try:
+        artifact_name = load_midibert("this_artifact_does_not_exist.ckpt")
+    except ValueError:
+        pass
