@@ -9,7 +9,7 @@ from transformers import BertModel
 
 class Embeddings(nn.Module):
     def __init__(self, n_token, d_model):
-        super().__init__()
+        super(Embeddings, self).__init__()
         self.lut = nn.Embedding(n_token, d_model)
         self.d_model = d_model
 
@@ -19,7 +19,7 @@ class Embeddings(nn.Module):
 
 class MidiBert(nn.Module):
     def __init__(self, bertConfig, e2w, w2e):
-        super().__init__()
+        super(MidiBert, self).__init__()
 
         self.bert = BertModel(bertConfig)
         bertConfig.d_model = bertConfig.hidden_size
