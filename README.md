@@ -13,5 +13,8 @@ We provide a brief overview of the project setup and the steps used to analyze a
 
 ![BeMuse architecture diagram](./media/bemuse-architecture.png)
 
-
+BeMuse begins by preprocessing a MIDI input file into a compound word sequence (CP), which is passed as input to a fine-tuned MidiBERT encoder. 
+The encoder outputs a 768-dimensional vector representation of the input in latent space. 
+Then, the input is compared against a pre-computed database of song vectors using cosine similarity. 
+After comparing the input vector against all possible outputs, the tool outputs the top 5 most-similar songs to the given input.
 
