@@ -1,16 +1,7 @@
 from typing import List
+import pretty_midi
 
-
-def preprocess_midi(midi_paths: List[str]):
-    """
-    Preprocess a list of MIDI files into the CP tuples used for MidiBERT.
-    :param midi_paths: MIDI files
-    :return: CP tuples corresponding to each MIDI file
-    """
-    from typing import List
-    import pretty_midi
-
-    def preprocess_midi(midi_paths: List[str]) -> List[List[str]]:
+def preprocess_midi(midi_paths: List[str]) -> List[List[str]]:
         """
         Preprocess a list of MIDI files into the CP tuples used for MidiBERT. This
         converts a directory of MIDI files into a corresponding list of compound words.
@@ -39,7 +30,7 @@ def preprocess_midi(midi_paths: List[str]):
 
         return cp_tuples
 
-    def extract_compound_words(midi_data: pretty_midi.PrettyMIDI) -> List[str]:
+def extract_compound_words(midi_data: pretty_midi.PrettyMIDI) -> List[str]:
         """
         Extract compound words from MIDI data.
         This is a placeholder function. You need to implement it based on your specific requirements.
