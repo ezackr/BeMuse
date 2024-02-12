@@ -1,7 +1,7 @@
 # from midi_manager import MidiLoader
 import pickle
 
-from midi_manager import sequence_mealody_vector_2_DB12_melody_vector_with_time, sequence_melody_vector_2_interval_melody_vector_with_time
+# from midi_manager import sequence_mealody_vector_2_DB12_melody_vector_with_time, sequence_melody_vector_2_interval_melody_vector_with_time
 import argparse
 
 parser = argparse.ArgumentParser(
@@ -37,7 +37,7 @@ MIN_SONG_SIZE = 12
 # -------------------------------------------
 tensor = pickle.load(open(source_dir + base_name + '_song_list.p', "rb"))
 
-print 'length of array, should be the number of midis in folder, in my case ' + str(files_count) + ':'
+print ('length of array, should be the number of midis in folder, in my case ' + str(files_count) + ':')
 assert len(tensor) == files_count
 
 print ('cleaning original pickle')

@@ -2,7 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/main/data/mono-midi-transposition-dataset/mono-midi-transposition-dataset" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/main/data/mono-midi-transposition-dataset/mono-midi-transposition-dataset/midi-manager" vcs="Git" />
   </component>
 </project>
