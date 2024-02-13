@@ -1,6 +1,7 @@
 # from midi_manager import MidiLoader
 import pickle
-
+# THIS SHITS FUCKED....
+# script prepares MIDI data by cleaning it, converting it into different representations (DB12 and intervals)
 # from midi_manager import sequence_mealody_vector_2_DB12_melody_vector_with_time, sequence_melody_vector_2_interval_melody_vector_with_time
 import argparse
 
