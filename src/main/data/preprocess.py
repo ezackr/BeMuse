@@ -1,6 +1,7 @@
 from typing import List
 import pretty_midi
 
+
 def _extract_compound_words(midi_data: pretty_midi.PrettyMIDI) -> List[str]:
     """
     Extract compound words from MIDI data.
@@ -14,7 +15,6 @@ def _extract_compound_words(midi_data: pretty_midi.PrettyMIDI) -> List[str]:
     return compound_words
 
 
->>>>>>> b43cfe08d33ebee01616f1dc7dde3cbcf091161e
 def preprocess_midi(midi_paths: List[str]) -> List[List[str]]:
     """
     Preprocess a list of MIDI files into the CP tuples used for MidiBERT. This
