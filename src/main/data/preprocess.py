@@ -13,7 +13,7 @@ def _time_signature_has_changed(time_sig_changes: List[TimeSignature], note: Not
     return time_sig_changes and note.start >= time_sig_changes[0].time
 
 
-def midi_to_tuple(file_path) -> List[Tuple[int, int, int, int]]:
+def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     """
     Converts a MIDI file into a sequence of 4-tuples of:
     (bar, position, pitch, duration)
@@ -37,7 +37,7 @@ def midi_to_tuple(file_path) -> List[Tuple[int, int, int, int]]:
     return words
 
 
-def preprocess_midi(midi_paths: List[str]) -> List[List[Tuple[int, int, int, int]]]:
+def preprocess_midi(midi_paths: List[str]) -> List[List[Tuple[int, float, int, float]]]:
     """
     Preprocess a list of MIDI files into the CP tuples used for MidiBERT. This
     converts a directory of MIDI files into a corresponding list of compound words.
