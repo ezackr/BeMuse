@@ -1,6 +1,7 @@
 from typing import List
 import pretty_midi
 
+
 def preprocess_midi(midi_paths: List[str]) -> List[List[str]]:
         """
         Preprocess a list of MIDI files into the CP tuples used for MidiBERT. This
