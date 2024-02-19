@@ -1,20 +1,18 @@
-from musicautobot.config import *
-from musicautobot.music_transformer import *
-from musicautobot.utils import midifile
+import numpy as np
 
-# Example File
-midi_file = Path('dataset/mono-midi-transposition-dataset/midi_files/train/midi/435.mid')
+min_midi_pitch: int = 0
+max_midi_pitch: int = 127
 
-# Vocab defines how the item is represented as a tensor
-vocab = MusicVocab.create()
-# Load MusicItem
-item = MusicItem.from_file(midi_file, vocab)
 
-# Transpose the item
-transposed_item = item.transpose(7)  # Transpose by a perfect fifth (7 semitones)
-
-# Show original and transposed items
-print("Original Item:")
-item.show()
-print("\nTransposed Item:")
-transposed_item.show()
+def get_random_transposition(midi_sequence: np.ndarray) -> np.ndarray:
+    """
+    Creates a random transposition of an original midi sequence by shifting
+    each pitch by a random, constant value.
+    :param midi_sequence: the original midi sequence
+    :return: the new, transposed midi sequence
+    """
+    transposition_value = np.random.randint(1, 12)
+    trans_midi_sequence = midi_sequence.copy()
+    trans_midi_sequence[:, 2] += transposition_value
+    trans_midi_sequence[:, 2] = np.clip(trans_midi_sequence[:, 2], min_midi_pitch, max_midi_pitch)
+    return trans_midi_sequence
