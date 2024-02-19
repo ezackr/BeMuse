@@ -38,7 +38,7 @@ def _get_bar_to_ticks_array(midi_data: PrettyMIDI) -> List[float]:
     return bar_ticks
 
 
-def _get_bar_of_tick(current_tick: float, bar_to_ticks: List[float]) -> int:
+def get_bar_of_tick(current_tick: float, bar_to_ticks: List[float]) -> int:
     """
     Gets the bar of a given tick value. The array bar_to_ticks corresponds to
     the tick value at the start of each bar. The bar of an arbitrary tick
@@ -55,7 +55,7 @@ def _get_bar_of_tick(current_tick: float, bar_to_ticks: List[float]) -> int:
     return len(bar_to_ticks)
 
 
-def _get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: List[float]) -> float:
+def get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: List[float]) -> float:
     """
     Gets the position of a given tick value relative to the start of its bar.
     For compatibility with the MidiBERT preprocessing, positions are rounded
@@ -63,7 +63,7 @@ def _get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: Li
     :param current_tick: a given tick value
     :param bar_number: the bar number of the given tick value
     :param bar_to_ticks: the tick values at the start of each bar
-    :return:
+    :return: the position of a tick relative to the start of its bar
     """
     bar_length = bar_to_ticks[bar_number] - bar_to_ticks[bar_number - 1]
     absolute_position = (current_tick - bar_to_ticks[bar_number - 1]) / bar_length
@@ -72,7 +72,8 @@ def _get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: Li
 
 def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     """
-    Converts a MIDI file into a sequence of 4-tuples of:
+    Converts a MIDI file into a sequence of 4-tuples, where each tuple has
+    the form:
     (bar, position, pitch, duration)
     :param file_path: a MIDI file
     :return: the corresponding sequence of tuples
@@ -82,8 +83,8 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     words = []
     for note in midi_data.instruments[0].notes:
         note_start_tick = midi_data.time_to_tick(note.start)
-        bar_number = _get_bar_of_tick(note_start_tick, bar_to_ticks)
-        position = _get_position_of_tick(note_start_tick, bar_number, bar_to_ticks)
+        bar_number = get_bar_of_tick(note_start_tick, bar_to_ticks)
+        position = get_position_of_tick(note_start_tick, bar_number, bar_to_ticks)
         word = (bar_number, position, note.pitch, note.end - note.start)
         words.append(word)
     return words
@@ -91,10 +92,9 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
 
 def preprocess_midi(midi_dir: str) -> List[List[Tuple[int, float, int, float]]]:
     """
-    Preprocess a list of MIDI files into the CP tuples used for MidiBERT. This
-    converts a directory of MIDI files into a corresponding list of compound words.
-    :param midi_dir: A directory of midi files
-    :return: CP tuples corresponding to each MIDI file
+    Preprocesses a directory of MIDI files into tuples used for MidiBERT.
+    :param midi_dir: a directory of MIDI files
+    :return: tuple sequences corresponding to each MIDI file
     """
     for root, _, files in walk(midi_dir):
         for file in tqdm(files):
