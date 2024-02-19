@@ -29,6 +29,6 @@ def test_load_midibert():
 
 def test_load_midibert_nonexistent():
     try:
-        artifact_name = load_midibert("this_artifact_does_not_exist.ckpt")
+        load_midibert("this_artifact_does_not_exist.ckpt")
     except ValueError:
         pass
