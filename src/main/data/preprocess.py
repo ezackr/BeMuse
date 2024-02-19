@@ -1,3 +1,4 @@
+import math
 from os import walk
 from os.path import join
 from typing import List, Tuple
@@ -26,7 +27,7 @@ def _get_bar_to_ticks_array(midi_data: PrettyMIDI) -> List[float]:
     max_tick = midi_data.time_to_tick(midi_data.get_end_time())
     current_time_sig = (4, 4)
     time_sig_changes = midi_data.time_signature_changes
-    bar_ticks = []
+    bar_ticks = [0]
     while current_tick < max_tick:
         while _time_signature_has_changed(time_sig_changes, current_tick):
             current_time_sig = (time_sig_changes[0].numerator, time_sig_changes[0].denominator)
@@ -37,21 +38,36 @@ def _get_bar_to_ticks_array(midi_data: PrettyMIDI) -> List[float]:
     return bar_ticks
 
 
-def _get_bar_of_tick(current_ticks: float, bar_to_ticks: List[float]) -> int:
+def _get_bar_of_tick(current_tick: float, bar_to_ticks: List[float]) -> int:
     """
     Gets the bar of a given tick value. The array bar_to_ticks corresponds to
     the tick value at the start of each bar. The bar of an arbitrary tick
     value corresponds to the largest index in bar_to_ticks such that the
     tick value at the start of the bar is less than or equal to the given tick
     value.
-    :param current_ticks: a given tick value
+    :param current_tick: a given tick value
     :param bar_to_ticks: the tick values at the start of each bar
     :return: the bar corresponding to the current_ticks value
     """
     for i in range(len(bar_to_ticks)):
-        if bar_to_ticks[i] > current_ticks:
-            return i + 1
+        if bar_to_ticks[i] > current_tick:
+            return i
     return len(bar_to_ticks)
+
+
+def _get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: List[float]) -> float:
+    """
+    Gets the position of a given tick value relative to the start of its bar.
+    For compatibility with the MidiBERT preprocessing, positions are rounded
+    to the nearest 16th value.
+    :param current_tick: a given tick value
+    :param bar_number: the bar number of the given tick value
+    :param bar_to_ticks: the tick values at the start of each bar
+    :return:
+    """
+    bar_length = bar_to_ticks[bar_number] - bar_to_ticks[bar_number - 1]
+    absolute_position = (current_tick - bar_to_ticks[bar_number - 1]) / bar_length
+    return math.floor(absolute_position * 16) / 16
 
 
 def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
@@ -65,8 +81,9 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     bar_to_ticks = _get_bar_to_ticks_array(midi_data)
     words = []
     for note in midi_data.instruments[0].notes:
-        bar_number = _get_bar_of_tick(midi_data.time_to_tick(note.start), bar_to_ticks)
-        position = -1
+        note_start_tick = midi_data.time_to_tick(note.start)
+        bar_number = _get_bar_of_tick(note_start_tick, bar_to_ticks)
+        position = _get_position_of_tick(note_start_tick, bar_number, bar_to_ticks)
         word = (bar_number, position, note.pitch, note.end - note.start)
         words.append(word)
     return words
