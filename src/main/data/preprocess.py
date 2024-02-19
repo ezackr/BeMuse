@@ -2,6 +2,8 @@ import math
 from os import walk
 from os.path import join
 from typing import List, Tuple
+
+import numpy as np
 from pretty_midi import PrettyMIDI, TimeSignature
 from tqdm import tqdm
 
@@ -90,14 +92,15 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     return words
 
 
-def preprocess_midi(midi_dir: str) -> List[List[Tuple[int, float, int, float]]]:
+def preprocess_midi(midi_dir: str) -> np.ndarray:
     """
     Preprocesses a directory of MIDI files into tuples used for MidiBERT.
     :param midi_dir: a directory of MIDI files
     :return: tuple sequences corresponding to each MIDI file
     """
+    midi_sequences = []
     for root, _, files in walk(midi_dir):
         for file in tqdm(files):
-            file_path = join(root, file)
-            midi_to_tuple(file_path)
-    return []
+            abs_path = join(root, file)
+            midi_sequences.append(np.array(midi_to_tuple(abs_path)))
+    return np.concatenate(midi_sequences)
