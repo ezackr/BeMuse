@@ -1,4 +1,3 @@
-import math
 from os import walk
 from os.path import join
 from typing import List, Tuple
@@ -60,16 +59,13 @@ def get_bar_of_tick(current_tick: float, bar_to_ticks: List[float]) -> int:
 def get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: List[float]) -> float:
     """
     Gets the position of a given tick value relative to the start of its bar.
-    For compatibility with the MidiBERT preprocessing, positions are rounded
-    to the nearest 16th value.
     :param current_tick: a given tick value
     :param bar_number: the bar number of the given tick value
     :param bar_to_ticks: the tick values at the start of each bar
     :return: the position of a tick relative to the start of its bar
     """
     bar_length = bar_to_ticks[bar_number] - bar_to_ticks[bar_number - 1]
-    absolute_position = (current_tick - bar_to_ticks[bar_number - 1]) / bar_length
-    return math.floor(absolute_position * 16) / 16
+    return (current_tick - bar_to_ticks[bar_number - 1]) / bar_length
 
 
 def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
