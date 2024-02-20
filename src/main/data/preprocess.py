@@ -7,11 +7,12 @@ import numpy as np
 from pretty_midi import PrettyMIDI, TimeSignature
 from tqdm import tqdm
 
+NUM_CLASSES: int = 4
 BAR_PAD_TOKEN: int = 2
 POSITION_PAD_TOKEN: int = 16
 PITCH_PAD_TOKEN: int = 86
 DURATION_PAD_TOKEN: int = 64
-padding_word = [BAR_PAD_TOKEN, POSITION_PAD_TOKEN, PITCH_PAD_TOKEN, DURATION_PAD_TOKEN]
+PAD_WORD = [BAR_PAD_TOKEN, POSITION_PAD_TOKEN, PITCH_PAD_TOKEN, DURATION_PAD_TOKEN]
 
 NUM_POSITION_SUB_BEATS: int = 16
 NUM_DURATION_SUB_BEATS: int = 16
@@ -113,10 +114,6 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     return words
 
 
-def pad(midi_sequences: List[np.ndarray]) -> np.ndarray:
-    pass
-
-
 def preprocess_midi(midi_dir: str) -> List[np.ndarray]:
     """
     Preprocesses a directory of MIDI files into tuples used for MidiBERT.
@@ -129,3 +126,20 @@ def preprocess_midi(midi_dir: str) -> List[np.ndarray]:
             abs_path = join(root, file)
             midi_sequences.append(np.array(midi_to_tuple(abs_path)))
     return midi_sequences
+
+
+def pad(midi_sequences: List[np.ndarray], max_length: int = None) -> np.ndarray:
+    """
+    Pads a given list of midi sequences to a maximum length. If no length is
+    provided, the maximum sequence length is used.
+    :param midi_sequences: an array of midi sequences
+    :param max_length: the length to pad to
+    :return: an array corresponding to the padded sequences
+    """
+    if not max_length:
+        max_length = max([len(seq) for seq in midi_sequences])
+    padded_seqs = np.zeros(shape=(len(midi_sequences), max_length, NUM_CLASSES))
+    for i, seq in enumerate(midi_sequences):
+        padding = np.array(PAD_WORD * (max_length - len(seq))).reshape(-1, NUM_CLASSES)
+        padded_seqs[i] = np.vstack([seq, padding])
+    return padded_seqs
