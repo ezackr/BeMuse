@@ -6,6 +6,12 @@ import numpy as np
 from pretty_midi import PrettyMIDI, TimeSignature
 from tqdm import tqdm
 
+BAR_PAD_TOKEN: int = 2
+POSITION_PAD_TOKEN: int = 16
+PITCH_PAD_TOKEN: int = 86
+DURATION_PAD_TOKEN: int = 64
+padding_word = [BAR_PAD_TOKEN, POSITION_PAD_TOKEN, PITCH_PAD_TOKEN, DURATION_PAD_TOKEN]
+
 
 def _time_signature_has_changed(time_sig_changes: List[TimeSignature], current_time: float) -> bool:
     """
@@ -83,7 +89,7 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
         note_start_tick = midi_data.time_to_tick(note.start)
         bar_number = get_bar_of_tick(note_start_tick, bar_to_ticks)
         position = get_position_of_tick(note_start_tick, bar_number, bar_to_ticks)
-        word = (bar_number, position, note.pitch, note.end - note.start)
+        word = (bar_number, position, note.pitch, midi_data.time_to_tick(note.end - note.start))
         words.append(word)
     return words
 
