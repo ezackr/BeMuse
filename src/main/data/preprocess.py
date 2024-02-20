@@ -113,7 +113,11 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     return words
 
 
-def preprocess_midi(midi_dir: str) -> List[np.ndarray]:
+def pad(midi_sequences: List[np.ndarray]) -> np.ndarray:
+    pass
+
+
+def preprocess_midi(midi_dir: str) -> np.ndarray:
     """
     Preprocesses a directory of MIDI files into tuples used for MidiBERT.
     :param midi_dir: a directory of MIDI files
@@ -124,4 +128,4 @@ def preprocess_midi(midi_dir: str) -> List[np.ndarray]:
         for file in tqdm(files):
             abs_path = join(root, file)
             midi_sequences.append(np.array(midi_to_tuple(abs_path)))
-    return midi_sequences
+    return pad(midi_sequences)
