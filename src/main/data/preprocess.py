@@ -12,6 +12,8 @@ PITCH_PAD_TOKEN: int = 86
 DURATION_PAD_TOKEN: int = 64
 padding_word = [BAR_PAD_TOKEN, POSITION_PAD_TOKEN, PITCH_PAD_TOKEN, DURATION_PAD_TOKEN]
 
+NUM_SUB_BEATS: int = 16
+
 
 def _time_signature_has_changed(time_sig_changes: List[TimeSignature], current_time: float) -> bool:
     """
@@ -71,7 +73,8 @@ def get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: Lis
     :return: the position of a tick relative to the start of its bar
     """
     bar_length = bar_to_ticks[bar_number] - bar_to_ticks[bar_number - 1]
-    return (current_tick - bar_to_ticks[bar_number - 1]) / bar_length
+    abs_length = (current_tick - bar_to_ticks[bar_number - 1]) / bar_length
+    return round(abs_length * NUM_SUB_BEATS)
 
 
 def get_duration_of_note(tick_length: float, bar_number: int, bar_to_ticks: List[float]) -> float:
