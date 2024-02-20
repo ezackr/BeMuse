@@ -82,7 +82,7 @@ def get_duration_of_note(tick_length: float, bar_number: int, bar_to_ticks: List
     pass
 
 
-def classify_bar(bar_number: int, words: List[Tuple[int, float, int, float]]) -> int:
+def _classify_bar(bar_number: int, words: List[Tuple[int, float, int, float]]) -> int:
     """
     Checks if the given bar number is new in the given word sequence.
     :param bar_number: the given bar number
@@ -111,7 +111,7 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
         bar_number = get_bar_of_tick(note_start_tick, bar_to_ticks)
         position = get_position_of_tick(note_start_tick, bar_number, bar_to_ticks)
         duration = get_duration_of_note(note_duration_tick, bar_number, bar_to_ticks)
-        word = (classify_bar(bar_number, words), position, note.pitch, duration)
+        word = (_classify_bar(bar_number, words), position, note.pitch, duration)
         words.append(word)
     return words
 
