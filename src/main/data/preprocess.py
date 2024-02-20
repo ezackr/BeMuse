@@ -14,7 +14,7 @@ DURATION_PAD_TOKEN: int = 64
 padding_word = [BAR_PAD_TOKEN, POSITION_PAD_TOKEN, PITCH_PAD_TOKEN, DURATION_PAD_TOKEN]
 
 NUM_POSITION_SUB_BEATS: int = 16
-NUM_DURATION_SUB_BEATS: int = 64
+NUM_DURATION_SUB_BEATS: int = 16
 
 
 def _time_signature_has_changed(time_sig_changes: List[TimeSignature], current_time: float) -> bool:
@@ -79,22 +79,14 @@ def get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: Lis
     return math.floor(abs_pos * NUM_POSITION_SUB_BEATS)
 
 
-def get_duration_of_note(start_tick: float, end_tick: float, bar_to_ticks: List[float]) -> int:
-    start_bar = get_bar_of_tick(start_tick, bar_to_ticks)
-    end_bar = get_bar_of_tick(end_tick, bar_to_ticks)
-    return -1
-
-
-def _classify_bar(bar_number: int, words: List[Tuple[int, float, int, float]]) -> int:
+def _classify_bar(prev_bar_number: int, new_bar_number: int) -> int:
     """
-    Checks if the given bar number is new in the given word sequence.
-    :param bar_number: the given bar number
-    :param words: a MIDI sequence represented by compound words
-    :return: 0 if a bar is new, 1 otherwise
+    Checks if two given bar numbers are equal.
+    :param prev_bar_number: the previous bar number
+    :param new_bar_number: the new bar number
+    :return: 0 if the bar numbs are the same, 1 otherwise
     """
-    if not words:
-        return 0
-    return int(bar_number == words[-1])
+    return int(prev_bar_number != new_bar_number)
 
 
 def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
@@ -108,14 +100,16 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     midi_data = PrettyMIDI(file_path)
     bar_to_ticks = _get_bar_to_ticks_array(midi_data)
     words = []
+    prev_bar_number = -1
     for note in midi_data.instruments[0].notes:
         note_start_tick = midi_data.time_to_tick(note.start)
         note_end_tick = midi_data.time_to_tick(note.end)
         bar_number = get_bar_of_tick(note_start_tick, bar_to_ticks)
         position = get_position_of_tick(note_start_tick, bar_number, bar_to_ticks)
-        duration = get_duration_of_note(note_start_tick, note_end_tick, bar_to_ticks)
-        word = (_classify_bar(bar_number, words), position, note.pitch, duration)
+        duration = round((note_end_tick - note_start_tick) / midi_data.resolution * NUM_DURATION_SUB_BEATS)
+        word = (_classify_bar(prev_bar_number, bar_number), position, note.pitch, duration)
         words.append(word)
+        prev_bar_number = bar_number
     return words
 
 
