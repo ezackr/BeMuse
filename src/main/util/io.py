@@ -2,7 +2,6 @@ import os
 import pickle
 
 import torch
-from torch import nn
 from transformers import BertConfig
 
 from src.main.model import MidiBert
@@ -33,7 +32,7 @@ root_dir: str = get_parent_dir(current_path, level=4)
 dict_path: str = os.path.join(root_dir, "artifact", "midibert", "CP.pkl")
 
 
-def load_midibert(artifact_name: str = "pretrain_model.ckpt") -> nn.Module:
+def load_midibert(artifact_name: str = "pretrain_model.ckpt") -> MidiBert:
     """
     Loads the pre-trained MidiBERT checkpoint from the artifact directory.
     :param artifact_name: the name of the MidiBERT artifact file in the
