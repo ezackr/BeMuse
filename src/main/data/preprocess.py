@@ -74,6 +74,22 @@ def get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: Lis
     return (current_tick - bar_to_ticks[bar_number - 1]) / bar_length
 
 
+def get_duration_of_note(tick_length: float, bar_number: int, bar_to_ticks: List[float]) -> float:
+    pass
+
+
+def classify_bar(bar_number: int, words: List[Tuple[int, float, int, float]]) -> int:
+    """
+    Checks if the given bar number is new in the given word sequence.
+    :param bar_number: the given bar number
+    :param words: a MIDI sequence represented by compound words
+    :return: 0 if a bar is new, 1 otherwise
+    """
+    if not words:
+        return 0
+    return int(bar_number == words[-1])
+
+
 def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     """
     Converts a MIDI file into a sequence of 4-tuples, where each tuple has
@@ -87,9 +103,11 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     words = []
     for note in midi_data.instruments[0].notes:
         note_start_tick = midi_data.time_to_tick(note.start)
+        note_duration_tick = midi_data.time_to_tick(note.end - note.start)
         bar_number = get_bar_of_tick(note_start_tick, bar_to_ticks)
         position = get_position_of_tick(note_start_tick, bar_number, bar_to_ticks)
-        word = (bar_number, position, note.pitch, midi_data.time_to_tick(note.end - note.start))
+        duration = get_duration_of_note(note_duration_tick, bar_number, bar_to_ticks)
+        word = (classify_bar(bar_number, words), position, note.pitch, duration)
         words.append(word)
     return words
 
