@@ -1,3 +1,4 @@
+import math
 from os import walk
 from os.path import join
 from typing import List, Tuple
@@ -73,8 +74,8 @@ def get_position_of_tick(current_tick: float, bar_number: int, bar_to_ticks: Lis
     :return: the position of a tick relative to the start of its bar
     """
     bar_length = bar_to_ticks[bar_number] - bar_to_ticks[bar_number - 1]
-    abs_length = (current_tick - bar_to_ticks[bar_number - 1]) / bar_length
-    return round(abs_length * NUM_SUB_BEATS)
+    abs_pos = (current_tick - bar_to_ticks[bar_number - 1]) / bar_length
+    return math.floor(abs_pos * NUM_SUB_BEATS)
 
 
 def get_duration_of_note(tick_length: float, bar_number: int, bar_to_ticks: List[float]) -> float:

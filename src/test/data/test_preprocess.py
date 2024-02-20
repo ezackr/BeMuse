@@ -15,8 +15,9 @@ def test_get_bar_of_tick():
 def test_get_position_of_tick():
     bar_to_ticks = [0.0, 20.0, 40.0]
     assert get_position_of_tick(0.0, 1, bar_to_ticks) == 0
-    assert get_position_of_tick(4.0, 1, bar_to_ticks) == 0.1875
-    assert get_position_of_tick(10.0, 1, bar_to_ticks) == 0.5
+    assert get_position_of_tick(2.49, 1, bar_to_ticks) == 1
+    assert get_position_of_tick(2.5, 1, bar_to_ticks) == 2
+    assert get_position_of_tick(10.0, 1, bar_to_ticks) == 8
 
 
 def test_midi_to_tuple():
