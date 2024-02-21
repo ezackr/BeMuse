@@ -2,6 +2,7 @@ from os.path import join
 from typing import List
 
 import numpy as np
+import torch
 from tqdm import tqdm
 
 from src.main.data import get_random_transposition, pad, preprocess_midi
@@ -35,3 +36,20 @@ def generate_dataset(split_name: str = "train") -> np.ndarray:
     print(f"Padding dataset.")
     padded_sequences = pad(aug_midi_sequences)
     return padded_sequences
+
+
+def save_dataset(split_name: str):
+    """
+
+    :param split_name:
+    :return:
+    """
+    dataset = torch.tensor(generate_dataset(split_name)).to(dtype=torch.int32)
+    artifact_path = join(
+        root_dir, "dataset", "mono-midi-transposition-dataset", "midi_files", split_name, f"{split_name}.pt"
+    )
+    torch.save(dataset, artifact_path)
+
+
+if __name__ == "__main__":
+    save_dataset("train")
