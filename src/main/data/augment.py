@@ -1,7 +1,7 @@
 import numpy as np
 
-min_midi_pitch: int = 0
-max_midi_pitch: int = 127
+MIN_MIDI_PITCH: int = 0
+MAX_MIDI_PITCH: int = 127
 
 
 def get_random_transposition(midi_sequence: np.ndarray) -> np.ndarray:
@@ -14,5 +14,5 @@ def get_random_transposition(midi_sequence: np.ndarray) -> np.ndarray:
     transposition_value = np.random.randint(1, 12)
     trans_midi_sequence = midi_sequence.copy()
     trans_midi_sequence[:, 2] += transposition_value
-    trans_midi_sequence[:, 2] = np.clip(trans_midi_sequence[:, 2], min_midi_pitch, max_midi_pitch)
+    trans_midi_sequence[:, 2] = np.clip(trans_midi_sequence[:, 2], MIN_MIDI_PITCH, MAX_MIDI_PITCH)
     return trans_midi_sequence
