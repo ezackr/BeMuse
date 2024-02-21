@@ -5,11 +5,25 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-from src.main.data import get_random_transposition, pad, preprocess_midi
+from src.main.data import get_random_transposition, pad, preprocess_midi, split_to_length
 from src.main.util import root_dir
 
+MAX_BERT_SEQ_LENGTH: int = 512
 
-def _augment_dataset(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
+
+def _split_sequences(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
+    """
+
+    :param midi_sequences:
+    :return:
+    """
+    split_sequences = []
+    for sequence in tqdm(midi_sequences):
+        split_sequences += split_to_length(sequence, MAX_BERT_SEQ_LENGTH)
+    return split_sequences
+
+
+def _add_transpositions(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
     """
 
     :param midi_sequences:
@@ -31,8 +45,10 @@ def generate_dataset(split_name: str = "train") -> np.ndarray:
     midi_dir = join(root_dir, "dataset", "mono-midi-transposition-dataset", "midi_files", split_name, "midi")
     print(f"Loading data from path ${midi_dir}.")
     midi_sequences = preprocess_midi(midi_dir)
+    print(f"Splitting dataset.")
+    split_midi_sequences = _split_sequences(midi_sequences)
     print(f"Augmenting dataset.")
-    aug_midi_sequences = _augment_dataset(midi_sequences)
+    aug_midi_sequences = _add_transpositions(split_midi_sequences)
     print(f"Padding dataset.")
     padded_sequences = pad(aug_midi_sequences)
     return padded_sequences
@@ -52,4 +68,4 @@ def save_dataset(split_name: str):
 
 
 if __name__ == "__main__":
-    save_dataset("train")
+    save_dataset("validation")
