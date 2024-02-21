@@ -98,7 +98,11 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
     :param file_path: a MIDI file
     :return: the corresponding sequence of tuples
     """
-    midi_data = PrettyMIDI(file_path)
+    try:
+        midi_data = PrettyMIDI(file_path)
+    except ValueError:
+        print(f"Unable to process MIDI file {file_path}")
+        return []
     bar_to_ticks = _get_bar_to_ticks_array(midi_data)
     words = []
     prev_bar_number = -1
@@ -124,7 +128,9 @@ def preprocess_midi(midi_dir: str) -> List[np.ndarray]:
     for root, _, files in walk(midi_dir):
         for file in tqdm(files):
             abs_path = join(root, file)
-            midi_sequences.append(np.array(midi_to_tuple(abs_path)))
+            sequence = np.array(midi_to_tuple(abs_path))
+            if len(sequence) != 0:
+                midi_sequences.append(sequence)
     return midi_sequences
 
 
