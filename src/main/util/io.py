@@ -6,8 +6,8 @@ from transformers import BertConfig
 
 from src.main.model import MidiBert
 
-max_seq_len: int = 512
-hidden_dim: int = 768
+MAX_SEQ_LEN: int = 512
+HIDDEN_DIM: int = 768
 
 
 def get_parent_dir(path: str, level: int = 1) -> str:
@@ -47,9 +47,9 @@ def load_midibert(artifact_name: str = "pretrain_model.ckpt") -> MidiBert:
         raise ValueError("Unable to find artifact file " + midibert_artifact_path)
     # initialize bert model
     configuration = BertConfig(
-        max_position_embeddings=max_seq_len,
+        max_position_embeddings=MAX_SEQ_LEN,
         position_embedding_type="relative_key_query",
-        hidden_size=hidden_dim
+        hidden_size=HIDDEN_DIM
     )
     with open(dict_path, "rb") as f:
         e2w, w2e = pickle.load(f)
