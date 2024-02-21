@@ -66,7 +66,8 @@ class MidiBert(nn.Module):
         # feed to bert
         y = self.bert(inputs_embeds=emb_linear, attention_mask=attn_mask, output_hidden_states=output_hidden_states)
         y = y.last_hidden_state         # (batch_size, seq_len, 768)
-        return y
+        # pool outputs
+        return torch.mean(y, dim=1)
 
     def get_rand_tok(self):
         c1, c2, c3, c4 = self.n_tokens[0], self.n_tokens[1], self.n_tokens[2], self.n_tokens[3]
