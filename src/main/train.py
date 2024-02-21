@@ -58,7 +58,7 @@ def train(model: MidiBert, train_loader: DataLoader, val_loader: DataLoader, opt
         val_history.append(val_loss / len(val_loader))
 
         print(f"Epoch {len(train_history)}, train-loss={train_history[-1]}, val-loss={val_history[-1]}")
-        save_midibert(model, f"midibert-epoch{len(train_history)}")
+        save_midibert(model, f"midibert-epoch-{len(train_history)}")
     return train_history, val_history
 
 
