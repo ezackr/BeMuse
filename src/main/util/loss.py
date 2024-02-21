@@ -13,6 +13,6 @@ def pairwise_loss(estimate: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     num_samples = len(estimate)
     estimate_norm = F.normalize(estimate, p=2, dim=1)
     target_norm = F.normalize(target, p=2, dim=1)
-    actual_similarity = torch.matmul(estimate_norm, target_norm.t())
+    actual_similarity = torch.matmul(estimate_norm, target_norm.T)
     expected_similarity = torch.eye(num_samples)
     return (1 / num_samples) * torch.sum((actual_similarity - expected_similarity) ** 2)
