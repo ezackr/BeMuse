@@ -13,10 +13,14 @@ POSITION_PAD_TOKEN: int = 16
 PITCH_PAD_TOKEN: int = 86
 DURATION_PAD_TOKEN: int = 64
 PAD_WORD = [BAR_PAD_TOKEN, POSITION_PAD_TOKEN, PITCH_PAD_TOKEN, DURATION_PAD_TOKEN]
-# the maximum and minimum pitch values allowed in MidiBERT
-MIN_PITCH: int = 22
-MAX_PITCH: int = 107
-
+# the difference between a MIDI pitch and MidiBERT preprocessed pitch
+MIDIBERT_PITCH_OFFSET: int = 22
+# the maximum and minimum pitch values allowed in MidiBERT (after subtracting the offset)
+MIN_MIDIBERT_PITCH: int = 0
+MAX_MIDIBERT_PITCH: int = 85
+# the maximum duration allowed by MidiBERT
+MAX_MIDIBERT_DURATION: int = 63
+# MidiBERT sub-beat division values
 NUM_POSITION_SUB_BEATS: int = 16
 NUM_DURATION_SUB_BEATS: int = 16
 
@@ -115,10 +119,34 @@ def midi_to_tuple(file_path) -> List[Tuple[int, float, int, float]]:
         bar_number = get_bar_of_tick(note_start_tick, bar_to_ticks)
         position = get_position_of_tick(note_start_tick, bar_number, bar_to_ticks)
         duration = round((note_end_tick - note_start_tick) / midi_data.resolution * NUM_DURATION_SUB_BEATS)
-        word = (_classify_bar(prev_bar_number, bar_number), position, note.pitch, duration)
+        word = (_classify_bar(prev_bar_number, bar_number), position, note.pitch - MIDIBERT_PITCH_OFFSET, duration)
         words.append(word)
         prev_bar_number = bar_number
     return words
+
+
+def _is_valid_sequence(midi_sequence: np.ndarray) -> bool:
+    """
+    Checks if a given midi sequence is compatible with MidiBERTs input format.
+    MidiBERT only allows pitches between 22 and 107 (MIDI). Additionally,
+    MidiBERT does not allow pitches with a duration greater than 63. If the
+    MIDI file was unable to be processed (i.e. midi_sequence = []), then this
+    method also returns False.
+    :param midi_sequence: a MIDI sequence
+    :return: true iff the MIDI sequence is a valid MidiBERT input
+    """
+    # check sequence length
+    if len(midi_sequence) == 0:
+        return False
+    # check pitch range
+    pitches = midi_sequence[:, 2]
+    if any(pitches > MAX_MIDIBERT_PITCH) or any(pitches < MIN_MIDIBERT_PITCH):
+        return False
+    # check pitch durations
+    durations = midi_sequence[:, 3]
+    if any(durations > MAX_MIDIBERT_DURATION):
+        return False
+    return True
 
 
 def preprocess_midi(midi_dir: str) -> List[np.ndarray]:
@@ -132,7 +160,7 @@ def preprocess_midi(midi_dir: str) -> List[np.ndarray]:
         for file in tqdm(files):
             abs_path = join(root, file)
             sequence = np.array(midi_to_tuple(abs_path))
-            if len(sequence) != 0:
+            if _is_valid_sequence(sequence):
                 midi_sequences.append(sequence)
     return midi_sequences
 
