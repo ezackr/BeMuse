@@ -59,3 +59,17 @@ def load_midibert(artifact_name: str = "pretrain_model.ckpt") -> MidiBert:
     del state_dict["bert.embeddings.position_ids"]
     model.load_state_dict(state_dict=state_dict)
     return model
+
+
+def load_mono_midi_trans_dataset(split_name: str = "train") -> torch.Tensor:
+    """
+    Loads a split of the mono-midi-transposition-dataset into a PyTorch
+    tensor.
+    :param split_name: the data split (i.e. train, validation, evaluation)
+    :return: the dataset as a PyTorch tensor
+    """
+    dataset_path = os.path.join(
+        root_dir, "dataset", "mono-midi-transposition-dataset",
+        "midi_files", split_name, f"{split_name}.pt"
+    )
+    return torch.load(dataset_path)
