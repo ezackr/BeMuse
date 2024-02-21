@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 
 
-def loss(estimate: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+def pairwise_loss(estimate: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """
     Computes the loss between a group of estimate and target vectors using
     pairwise similarity.
