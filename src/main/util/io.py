@@ -68,7 +68,7 @@ def save_midibert(model: MidiBert, artifact_name: str):
     :param artifact_name: the name of the artifact
     """
     midibert_artifact_path = os.path.join(root_dir, "artifact", "midibert", artifact_name)
-    torch.save(model.state_dict, midibert_artifact_path)
+    torch.save(model.state_dict(), midibert_artifact_path)
 
 
 def load_mono_midi_trans_dataset(split_name: str = "train") -> torch.Tensor:
