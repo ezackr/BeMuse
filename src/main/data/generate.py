@@ -13,9 +13,10 @@ MAX_BERT_SEQ_LENGTH: int = 512
 
 def _split_sequences(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
     """
-
-    :param midi_sequences:
-    :return:
+    Splits larger MIDI sequences into multiple MIDI sequences of a fixed
+    maximum length.
+    :param midi_sequences: the original MIDI sequences
+    :return: the shortened, augmented MIDI sequences
     """
     split_sequences = []
     for sequence in tqdm(midi_sequences):
@@ -25,9 +26,10 @@ def _split_sequences(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
 
 def _add_transpositions(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
     """
-
-    :param midi_sequences:
-    :return:
+    Adds a transposition of each input sequence into a new random key
+    signature.
+    :param midi_sequences: the original MIDI sequences
+    :return: all original MIDI sequences, alongside new transpositions
     """
     augmented_sequences = []
     for sequence in tqdm(midi_sequences):
@@ -36,11 +38,13 @@ def _add_transpositions(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
     return augmented_sequences
 
 
-def generate_dataset(split_name: str = "train") -> np.ndarray:
+def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
     """
-
-    :param split_name:
-    :return:
+    Generates the mono-midi-transposition-dataset into the MidiBERT format,
+    with sequences trimmed to meet size restrictions, and transpositions added
+    to augment the dataset.
+    :param split_name: the data split (i.e. train, validation, evaluation)
+    :return: the dataset represented by a numpy array
     """
     midi_dir = join(root_dir, "dataset", "mono-midi-transposition-dataset", "midi_files", split_name, "midi")
     print(f"Loading data from path ${midi_dir}.")
@@ -54,18 +58,10 @@ def generate_dataset(split_name: str = "train") -> np.ndarray:
     return padded_sequences
 
 
-def save_dataset(split_name: str):
-    """
-
-    :param split_name:
-    :return:
-    """
-    dataset = torch.tensor(generate_dataset(split_name)).to(dtype=torch.int32)
+if __name__ == "__main__":
+    split = "validation"
+    dataset = torch.tensor(generate_mono_midi_dataset(split)).to(dtype=torch.int32)
     artifact_path = join(
-        root_dir, "dataset", "mono-midi-transposition-dataset", "midi_files", split_name, f"{split_name}.pt"
+        root_dir, "dataset", "mono-midi-transposition-dataset", "midi_files", split, f"{split}.pt"
     )
     torch.save(dataset, artifact_path)
-
-
-if __name__ == "__main__":
-    save_dataset("validation")
