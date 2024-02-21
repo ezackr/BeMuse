@@ -59,7 +59,3 @@ def load_midibert(artifact_name: str = "pretrain_model.ckpt") -> MidiBert:
     del state_dict["bert.embeddings.position_ids"]
     model.load_state_dict(state_dict=state_dict)
     return model
-
-
-def save_mono_midi_trans_dataset(split_name: str = "train"):
-    pass
