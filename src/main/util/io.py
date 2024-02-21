@@ -82,4 +82,4 @@ def load_mono_midi_trans_dataset(split_name: str = "train") -> torch.Tensor:
         root_dir, "dataset", "mono-midi-transposition-dataset",
         "midi_files", split_name, f"{split_name}.pt"
     )
-    return torch.load(dataset_path)
+    return torch.load(dataset_path).to(dtype=torch.int32)
