@@ -61,6 +61,16 @@ def load_midibert(artifact_name: str = "pretrain_model.ckpt") -> MidiBert:
     return model
 
 
+def save_midibert(model: MidiBert, artifact_name: str):
+    """
+    Saves a MidiBERT model state into a given artifact file.
+    :param model: the MidiBERT model
+    :param artifact_name: the name of the artifact
+    """
+    midibert_artifact_path = os.path.join(root_dir, "artifact", "midibert", artifact_name)
+    torch.save(model.state_dict, midibert_artifact_path)
+
+
 def load_mono_midi_trans_dataset(split_name: str = "train") -> torch.Tensor:
     """
     Loads a split of the mono-midi-transposition-dataset into a PyTorch
