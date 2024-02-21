@@ -37,7 +37,6 @@ def train(model: MidiBert, train_loader: DataLoader, val_loader: DataLoader, opt
             original_vec = model(original)
             transpose_vec = model(transpose)
 
-            print(original_vec.shape)
             loss = pairwise_loss(original_vec, transpose_vec)
             loss.backward()
 
