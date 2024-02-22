@@ -16,6 +16,9 @@ def get_random_transposition(midi_sequence: np.ndarray) -> np.ndarray:
     transposition_value = np.random.randint(1, 12)
     trans_midi_sequence = midi_sequence.copy()
     trans_midi_sequence[:, 2] += transposition_value
+    if any(trans_midi_sequence[:, 2] >= MAX_MIDI_PITCH):
+        # attempt to shift pitches down an octave if exceeding maximum value
+        trans_midi_sequence[:, 2] -= 12
     trans_midi_sequence[:, 2] = np.clip(trans_midi_sequence[:, 2], MIN_MIDI_PITCH, MAX_MIDI_PITCH)
     return trans_midi_sequence
 
