@@ -23,21 +23,22 @@ def get_dataloaders() -> Tuple[DataLoader, DataLoader]:
 
 
 def train(model: MidiBert, train_loader: DataLoader, val_loader: DataLoader, optimizer: Optimizer):
+    model.to(device)
     train_history = []
     val_history = []
     for _ in range(NUM_EPOCHS):
         model.train()
         train_loss = 0
         for batch in tqdm(train_loader):
-            original = batch[0][:, 0, :, :]
-            transpose = batch[0][:, 1, :, :]
+            original = batch[0][:, 0, :, :].to(device)
+            transpose = batch[0][:, 1, :, :].to(device)
 
             optimizer.zero_grad()
 
             original_vec = model(original)
             transpose_vec = model(transpose)
 
-            loss = pairwise_loss(original_vec, transpose_vec)
+            loss = pairwise_loss(original_vec, transpose_vec, device=device)
             loss.backward()
 
             optimizer.step()
@@ -49,11 +50,11 @@ def train(model: MidiBert, train_loader: DataLoader, val_loader: DataLoader, opt
         val_loss = 0
         with torch.no_grad():
             for batch in tqdm(val_loader):
-                original = batch[0][:, 0, :, :]
-                transpose = batch[0][:, 1, :, :]
+                original = batch[0][:, 0, :, :].to(device)
+                transpose = batch[0][:, 1, :, :].to(device)
                 original_vec = model(original)
                 transpose_vec = model(transpose)
-                loss = pairwise_loss(original_vec, transpose_vec)
+                loss = pairwise_loss(original_vec, transpose_vec, device=device)
                 val_loss += loss.item()
         val_history.append(val_loss / len(val_loader))
 
@@ -70,4 +71,10 @@ def main():
 
 
 if __name__ == "__main__":
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+    elif torch.cuda.is_available():
+        device = torch.device("cuda:0")
+    else:
+        device = torch.device("cpu")
     main()
