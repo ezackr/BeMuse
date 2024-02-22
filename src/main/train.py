@@ -17,8 +17,8 @@ def get_dataloaders() -> Tuple[DataLoader, DataLoader]:
     train_tensors = train_tensors.view(-1, 2, *train_tensors.size()[1:])
     val_tensors = load_mono_midi_trans_dataset("validation")
     val_tensors = val_tensors.view(-1, 2, *val_tensors.size()[1:])
-    train_loader = DataLoader(TensorDataset(train_tensors), batch_size=16, shuffle=True)
-    val_loader = DataLoader(TensorDataset(val_tensors), batch_size=16, shuffle=True)
+    train_loader = DataLoader(TensorDataset(train_tensors), batch_size=BATCH_SIZE, shuffle=True)
+    val_loader = DataLoader(TensorDataset(val_tensors), batch_size=BATCH_SIZE, shuffle=True)
     return train_loader, val_loader
 
 
