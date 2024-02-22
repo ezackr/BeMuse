@@ -2,7 +2,7 @@ from typing import List
 import numpy as np
 
 MIN_MIDI_PITCH: int = 0
-MAX_MIDI_PITCH: int = 127
+MAX_MIDI_PITCH: int = 85
 MAX_BERT_SEQ_LEN: int = 512
 
 
