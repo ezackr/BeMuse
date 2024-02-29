@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-from src.main.data import get_random_transposition, pad, preprocess_midi, split_to_length
+from src.main.data import add_accidentals, get_random_transposition, pad, preprocess_midi, split_to_length
 from src.main.util import root_dir
 
 MAX_BERT_SEQ_LENGTH: int = 512
@@ -38,6 +38,19 @@ def _add_transpositions(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
     return augmented_sequences
 
 
+def _add_accidentals(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
+    """
+    Adds a copy of each input sequence with random pitch adjustments.
+    :param midi_sequences: the original MIDI sequences
+    :return: all original MIDI sequences, alongside new transpositions
+    """
+    augmented_sequences = []
+    for sequence in tqdm(midi_sequences):
+        augmented_sequences.append(sequence)
+        augmented_sequences.append(add_accidentals(sequence, p=0.1))
+    return augmented_sequences
+
+
 def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
     """
     Generates the mono-midi-transposition-dataset into the MidiBERT format,
@@ -53,6 +66,7 @@ def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
     split_midi_sequences = _split_sequences(midi_sequences)
     print(f"Augmenting dataset.")
     aug_midi_sequences = _add_transpositions(split_midi_sequences)
+    aug_midi_sequences = _add_accidentals(aug_midi_sequences)
     print(f"Padding dataset.")
     padded_sequences = pad(aug_midi_sequences)
     return padded_sequences
