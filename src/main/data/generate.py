@@ -24,7 +24,7 @@ def _split_sequences(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
     return split_sequences
 
 
-def _add_transpositions(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
+def _add_transpositions(midi_sequences: List[np.ndarray], num_transpositions: int = 1) -> List[np.ndarray]:
     """
     Adds a transposition of each input sequence into a new random key
     signature.
@@ -34,11 +34,12 @@ def _add_transpositions(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
     augmented_sequences = []
     for sequence in tqdm(midi_sequences):
         augmented_sequences.append(sequence)
-        augmented_sequences.append(get_random_transposition(sequence))
+        for _ in range(num_transpositions):
+            augmented_sequences.append(get_random_transposition(sequence))
     return augmented_sequences
 
 
-def _add_accidentals(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
+def _add_accidentals(midi_sequences: List[np.ndarray], num_accidentals: int = 1) -> List[np.ndarray]:
     """
     Adds a copy of each input sequence with random pitch adjustments.
     :param midi_sequences: the original MIDI sequences
@@ -47,11 +48,12 @@ def _add_accidentals(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
     augmented_sequences = []
     for sequence in tqdm(midi_sequences):
         augmented_sequences.append(sequence)
-        augmented_sequences.append(add_accidentals(sequence, p=0.1))
+        for _ in range(num_accidentals):
+            augmented_sequences.append(add_accidentals(sequence, p=0.1))
     return augmented_sequences
 
 
-def _shuffle_pairs(midi_sequences: np.ndarray) -> np.ndarray:
+def _shuffle_pairs(midi_sequences: np.ndarray, samples_per_track: int) -> np.ndarray:
     pass
 
 
@@ -68,14 +70,16 @@ def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
     midi_dir = join(root_dir, "dataset", "mono-midi-transposition-dataset", "midi_files", split_name, "midi")
     print(f"Loading data from path ${midi_dir}.")
     midi_sequences = preprocess_midi(midi_dir)
-    print(f"Splitting dataset.")
+    print("Splitting dataset.")
     split_midi_sequences = _split_sequences(midi_sequences)
-    print(f"Augmenting dataset.")
-    aug_midi_sequences = _add_transpositions(split_midi_sequences)
-    aug_midi_sequences = _add_accidentals(aug_midi_sequences)
-    print(f"Padding dataset.")
+    print("Augmenting dataset.")
+    aug_midi_sequences = _add_transpositions(split_midi_sequences, num_transpositions)
+    aug_midi_sequences = _add_accidentals(aug_midi_sequences, num_accidentals)
+    print("Padding dataset.")
     padded_sequences = pad(aug_midi_sequences)
-    padded_sequences = _shuffle_pairs(padded_sequences)
+    print("Shuffling pairs.")
+    samples_per_track = (num_transpositions + 1) * (num_accidentals + 1)
+    padded_sequences = _shuffle_pairs(padded_sequences, samples_per_track)
     return padded_sequences
 
 
