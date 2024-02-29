@@ -23,6 +23,24 @@ def get_random_transposition(midi_sequence: np.ndarray) -> np.ndarray:
     return trans_midi_sequence
 
 
+def add_accidentals(midi_sequence: np.ndarray, p: float = 0.05) -> np.ndarray:
+    """
+    Adds accidentals to a midi sequence by randomly shifting a note [-2, +2]
+    semitones. If the shift creates an invalid midi pitch, then it is not
+    shifted.
+    :param midi_sequence: the original midi sequence
+    :param p: the probability of a note being shifted
+    :return: the new midi sequence with added accidentals
+    """
+    acc_midi_sequence = midi_sequence.copy()
+    for i, note in enumerate(midi_sequence):
+        if np.random.rand() < p:
+            shift = np.random.randint(-2, 2 + 1)
+            if MIN_MIDI_PITCH <= note + shift <= MAX_MIDI_PITCH:
+                acc_midi_sequence[i, 2] += shift
+    return acc_midi_sequence
+
+
 def _find_next_new_bar(midi_sequence: np.ndarray, start_idx: int) -> int:
     """
     Finds the next recent new bar starting from a given index in a sequence.
