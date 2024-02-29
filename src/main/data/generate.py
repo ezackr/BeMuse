@@ -54,7 +54,16 @@ def _add_accidentals(midi_sequences: List[np.ndarray], num_accidentals: int = 1)
 
 
 def _shuffle_pairs(midi_sequences: np.ndarray, samples_per_track: int) -> np.ndarray:
-    pass
+    """
+    Shuffles all midi sequences belonging to the same original midi file.
+    :param midi_sequences: all midi files (including augmented tracks)
+    :param samples_per_track: the number of tracks per midi file
+    :return: the shuffled dataset
+    """
+    batched_sequences = midi_sequences.reshape((-1, samples_per_track, *midi_sequences.shape[1:]))
+    for i, batch in enumerate(batched_sequences):
+        np.random.shuffle(batch)
+    return batched_sequences.reshape((-1, *midi_sequences.shape[1:]))
 
 
 def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
