@@ -51,6 +51,10 @@ def _add_accidentals(midi_sequences: List[np.ndarray]) -> List[np.ndarray]:
     return augmented_sequences
 
 
+def _shuffle_pairs(midi_sequences: np.ndarray) -> np.ndarray:
+    pass
+
+
 def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
     """
     Generates the mono-midi-transposition-dataset into the MidiBERT format,
@@ -59,6 +63,8 @@ def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
     :param split_name: the data split (i.e. train, validation, evaluation)
     :return: the dataset represented by a numpy array
     """
+    num_transpositions = 2
+    num_accidentals = 1
     midi_dir = join(root_dir, "dataset", "mono-midi-transposition-dataset", "midi_files", split_name, "midi")
     print(f"Loading data from path ${midi_dir}.")
     midi_sequences = preprocess_midi(midi_dir)
@@ -69,6 +75,7 @@ def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
     aug_midi_sequences = _add_accidentals(aug_midi_sequences)
     print(f"Padding dataset.")
     padded_sequences = pad(aug_midi_sequences)
+    padded_sequences = _shuffle_pairs(padded_sequences)
     return padded_sequences
 
 
