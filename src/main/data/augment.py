@@ -36,7 +36,7 @@ def add_accidentals(midi_sequence: np.ndarray, p: float = 0.05) -> np.ndarray:
     for i, note in enumerate(midi_sequence):
         if np.random.rand() < p:
             shift = np.random.randint(-2, 2 + 1)
-            if MIN_MIDI_PITCH <= note + shift <= MAX_MIDI_PITCH:
+            if MIN_MIDI_PITCH <= note[2] + shift <= MAX_MIDI_PITCH:
                 acc_midi_sequence[i, 2] += shift
     return acc_midi_sequence
 
