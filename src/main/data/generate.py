@@ -74,8 +74,8 @@ def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
     :param split_name: the data split (i.e. train, validation, evaluation)
     :return: the dataset represented by a numpy array
     """
-    num_transpositions = 2
-    num_accidentals = 1
+    num_transpositions = 1  # should be 1 for validation and evaluation
+    num_accidentals = 0  # should be 0 for validation and evaluation
     midi_dir = join(root_dir, "dataset", "mono-midi-transposition-dataset", "midi_files", split_name, "midi")
     print(f"Loading data from path ${midi_dir}.")
     midi_sequences = preprocess_midi(midi_dir)
