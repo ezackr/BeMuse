@@ -89,11 +89,12 @@ def generate_mono_midi_dataset(split_name: str = "train") -> np.ndarray:
     print("Shuffling pairs.")
     samples_per_track = (num_transpositions + 1) * (num_accidentals + 1)
     padded_sequences = _shuffle_pairs(padded_sequences, samples_per_track)
+    print(len(padded_sequences))
     return padded_sequences
 
 
 if __name__ == "__main__":
-    split = "validation"
+    split = "train"
     dataset = torch.tensor(generate_mono_midi_dataset(split)).to(dtype=torch.int32)
     artifact_path = join(
         root_dir, "dataset", "mono-midi-transposition-dataset", "midi_files", split, f"{split}.pt"
